@@ -18,14 +18,15 @@
         pointer-events: none;
     }
 
-    // header row: two even, top-aligned columns (name | logo+address)
+    // header row: name column gets the majority of the width so the (larger)
+    // bilingual company name stays on single lines, like the reference.
     > table {
         table-layout: fixed;
         width: 100%;
 
-        > tbody > tr > td { width: 50%; vertical-align: top; }
-        > tbody > tr > td:first-child { padding-right: 8px; }
-        > tbody > tr > td:last-child  { padding-left: 8px; }
+        > tbody > tr > td { vertical-align: top; }
+        > tbody > tr > td:first-child { width: 62%; padding-right: 8px; }
+        > tbody > tr > td:last-child  { width: 38%; padding-left: 8px; }
     }
 
     .o_company_logo { max-height: 45px; width: auto; }
@@ -36,11 +37,11 @@
 // Single-line footer (sale orders): company details span the width, page
 // number sits at the right. Small type keeps it to one line.
 .o_hicl_footer {
-    font-size: 11px;
+    font-size: 8px;   // renders ~11.5pt at this paperformat DPI (matches ref)
     line-height: 1.3;
 
     p { margin-bottom: 0; }
-    .page, .topage { font-size: 11px; }
+    .page, .topage { font-size: 8px; }
 }
 
 // Keep table rows whole across page breaks (avoids an empty split row at the

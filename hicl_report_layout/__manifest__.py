@@ -1,6 +1,6 @@
 {
     'name': 'HICL Report Layout - Header on First Page Only',
-    'version': '19.0.1.11.0',
+    'version': '19.0.1.12.5',
     'summary': 'Quotation & Invoice: Bubble layout, header page 1 only, repeating table header, single-line footer, A4.',
     'author': 'HICL', 'category': 'Technical',
     'depends': ['web', 'sale', 'account'],
