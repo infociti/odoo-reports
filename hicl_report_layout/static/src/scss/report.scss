@@ -44,7 +44,8 @@
 }
 
 // Keep table rows whole across page breaks (avoids an empty split row at the
-// top of continuation pages). Scoped to the sale-order document.
-.o_report_layout_bubble[data-oe-model="sale.order"] {
+// top of continuation pages). Scoped to the sale-order + invoice documents.
+.o_report_layout_bubble[data-oe-model="sale.order"],
+.o_report_layout_bubble[data-oe-model="account.move"] {
     .o_main_table { tr, .o_line_section, .o_line_note { page-break-inside: avoid; } }
 }
