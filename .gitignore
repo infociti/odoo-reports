@@ -5,6 +5,7 @@
 
 !/.gitignore
 !/README.md
+!/LICENSE
 !/hicl_report_layout/
 
 # Python bytecode / editor cruft inside tracked modules
