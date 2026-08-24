@@ -1,0 +1,14 @@
+# This repository lives inside the Odoo addons directory, which also holds
+# third-party modules that are NOT part of this project. Ignore everything at
+# the top level, then explicitly track only our own report modules + repo meta.
+/*
+
+!/.gitignore
+!/README.md
+!/hicl_report_layout/
+
+# Python bytecode / editor cruft inside tracked modules
+__pycache__/
+*.pyc
+*.pyo
+*.swp

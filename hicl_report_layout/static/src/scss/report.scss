@@ -1,0 +1,50 @@
+// HICL quotation / sales-order report.
+//
+// The document uses Odoo's standard "Bubble" layout; the only custom piece
+// is the page-1-only masthead re-inserted into the body (see
+// views/report_layout.xml). These rules make that inline masthead match the
+// standard header: two even top-aligned columns + a subtle brand corner.
+
+.o_hicl_page1_header {
+    position: relative;
+    margin-bottom: 18px;
+
+    // decorative brand corner — sits behind the masthead, page 1 only
+    .o_hicl_bubble {
+        position: absolute;
+        top: -815px;
+        right: -430px;
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    // header row: two even, top-aligned columns (name | logo+address)
+    > table {
+        table-layout: fixed;
+        width: 100%;
+
+        > tbody > tr > td { width: 50%; vertical-align: top; }
+        > tbody > tr > td:first-child { padding-right: 8px; }
+        > tbody > tr > td:last-child  { padding-left: 8px; }
+    }
+
+    .o_company_logo { max-height: 45px; width: auto; }
+
+    ul { margin-bottom: 0; }
+}
+
+// Single-line footer (sale orders): company details span the width, page
+// number sits at the right. Small type keeps it to one line.
+.o_hicl_footer {
+    font-size: 11px;
+    line-height: 1.3;
+
+    p { margin-bottom: 0; }
+    .page, .topage { font-size: 11px; }
+}
+
+// Keep table rows whole across page breaks (avoids an empty split row at the
+// top of continuation pages). Scoped to the sale-order document.
+.o_report_layout_bubble[data-oe-model="sale.order"] {
+    .o_main_table { tr, .o_line_section, .o_line_note { page-break-inside: avoid; } }
+}

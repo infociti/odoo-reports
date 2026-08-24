@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        A4 paper format for the quotation / sales order report.
+
+        Because the masthead no longer repeats as a page header (it is now
+        inline in the body on page 1 only), the top margin can be small and
+        uniform across all pages. The bottom margin (16mm) fits the compact
+        single-line footer (company details + "Page X / Y" on one row) plus
+        the brand wave.
+
+        A4 = 210 x 297 mm. Left/right use 0 with css_margins so the Bubble
+        layout's own horizontal padding sets the side gutters (~13 mm),
+        matching reference S00086.
+    -->
+    <record id="paperformat_quotation" model="report.paperformat">
+        <field name="name">Saudi Arabia A4 (Quotation)</field>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">16</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">5</field>
+        <field name="dpi">90</field>
+        <field name="css_margins" eval="True"/>
+    </record>
+    <record id="sale.action_report_saleorder" model="ir.actions.report">
+        <field name="paperformat_id" ref="paperformat_quotation"/>
+    </record>
+    <record id="sale.action_report_pro_forma_invoice" model="ir.actions.report">
+        <field name="paperformat_id" ref="paperformat_quotation"/>
+    </record>
+</odoo>

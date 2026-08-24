@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Quotation / Sales Order report: keep Odoo's standard "Bubble" look
+        (matches reference Quotation S00086) but render the company header on
+        the FIRST PAGE ONLY.
+
+        How: the Bubble layout normally prints the masthead as a wkhtmltopdf
+        *page header*, so it repeats on every page and forces a tall top
+        margin. For sale orders we:
+          1. suppress that repeating page header  -> pages 2+ have no masthead
+          2. re-insert the identical masthead inline at the top of the body
+             -> it appears exactly once, on page 1
+
+        Scoped to sale.order via o._name, so invoices / other reports that use
+        the Bubble layout are untouched.
+    -->
+    <template id="external_layout_bubble_quotation" inherit_id="web.external_layout_bubble" priority="100">
+
+        <!-- 1) Drop the repeating page header for sale orders only. -->
+        <xpath expr="//div[contains(@t-attf-class, 'header ')]" position="attributes">
+            <attribute name="t-if">not (o and o._name == 'sale.order')</attribute>
+        </xpath>
+
+        <!-- 2) Same masthead, inline at the top of the body = page 1 only. -->
+        <xpath expr="//div[contains(@t-attf-class, 'article')]/table[1]" position="before">
+            <div t-if="o and o._name == 'sale.order'" class="o_hicl_page1_header">
+                <!-- subtle brand corner (page 1 only, behind content) -->
+                <svg class="o_hicl_bubble" width="1100" height="1100"
+                     xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="550" cy="550" r="550"
+                            t-att-fill="company.primary_color" fill-opacity=".08"/>
+                </svg>
+                <table class="o_ignore_layout_styling table table-borderless mb-0">
+                    <tbody>
+                        <tr>
+                            <td t-if="company.report_header"
+                                class="o_company_tagline fw-bold p-0 pe-2 align-top">
+                                <span t-field="company.report_header">Company name</span>
+                            </td>
+                            <td class="p-0 text-end align-top">
+                                <img t-if="company.logo" class="o_company_logo mb-2"
+                                     t-att-src="image_data_uri(company.logo)" alt="Logo"/>
+                                <div name="company_address">
+                                    <ul class="list-unstyled mb-0">
+                                        <li>
+                                            <span t-field="company.company_details">Company details</span>
+                                        </li>
+                                        <li t-if="not forced_vat and company.vat">
+                                            <t t-esc="company.country_id.vat_label or 'Tax ID'">Tax ID</t>:
+                                            <span t-esc="company.vat">VAT</span>
+                                        </li>
+                                        <li t-if="forced_vat">
+                                            <t t-esc="company.country_id.vat_label or 'Tax ID'">Tax ID</t>:
+                                            <span t-esc="forced_vat">VAT</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </xpath>
+
+        <!-- 3) Footer on ONE line for sale orders: company details fill the
+                width on the left, page number pinned to the right. -->
+        <xpath expr="//div[contains(@t-attf-class, 'o_footer_content')]" position="replace">
+            <t t-if="o and o._name == 'sale.order'">
+                <div class="o_footer_content o_hicl_footer border-top pt-2 d-flex align-items-center">
+                    <div class="flex-grow-1 text-start" t-field="company.report_footer">Footer</div>
+                    <div t-if="report_type == 'pdf'" class="text-end text-muted ms-2 text-nowrap">
+                        Page <span class="page"/> / <span class="topage"/>
+                    </div>
+                </div>
+            </t>
+            <t t-else="">
+                <div t-attf-class="o_footer_content {{report_type != 'pdf' and 'position-absolute end-0 start-0 bottom-0 mx-5'}} pt-4 text-center">
+                    <div class="border-top pt-2" t-field="company.report_footer"/>
+                    <span t-if="report_type == 'pdf' and display_name_in_footer" class="text-muted" t-out="str(o.name) + ', '">(document name)</span>
+                    <span t-if="report_type == 'pdf'" class="text-muted">Page <span class="page"/> / <span class="topage"/></span>
+                </div>
+            </t>
+        </xpath>
+
+    </template>
+
+    <!--
+        Repeat the products-table header row on every page. Odoo ships the
+        sale-order thead with `display: table-row-group`, which stops it
+        repeating, so continuation pages lose the column headers and the
+        columns read as "not separated". Restore table-header-group so the
+        DESCRIPTION / QUANTITY / ... row prints at the top of each page.
+    -->
+    <template id="saleorder_repeat_table_header" inherit_id="sale.report_saleorder_document" priority="100">
+        <xpath expr="//thead[contains(@style, 'table-row-group')]" position="attributes">
+            <attribute name="style">display: table-header-group</attribute>
+        </xpath>
+    </template>
+
+</odoo>
